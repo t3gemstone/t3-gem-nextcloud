@@ -1,0 +1,4 @@
+#!/bin/sh
+
+deb-systemd-helper stop apache2
+deb-systemd-helper stop mariadb

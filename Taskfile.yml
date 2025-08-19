@@ -1,0 +1,28 @@
+# T3 Foundation Gemstone Project [t3gemstone.org]
+# SPDX-License-Identifier: Apache-2.0
+---
+version: "3"
+
+vars:
+  NAME: "t3-gem-nextcloud"
+  BUILD_PARAMS: -Zzstd -z0
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list-all --summary
+
+  build:
+    cmds:
+      - mkdir -p build/
+      - fakeroot chown -R root:root ./src
+      - fakeroot dpkg-deb {{ .BUILD_PARAMS }} --build ./src ./build
+  
+  release:
+    cmds:
+      - mkdir -p release
+      - fakeroot chown -R root:root ./src
+      - fakeroot dpkg-deb --build ./src ./release
+
+  clean: rm -rf build release

@@ -1,0 +1,9 @@
+Package: t3-gem-nextcloud
+Version: 0.0.1
+Architecture: all
+Section: utils
+Priority: optional
+Maintainer: Gemstone Dev Team <dev@t3gemstone.org>
+Description: Nextcloud server for self-hosting web services
+Depends: apache2, php, php-curl, php-cli, php-mysql, php-gd, php-common, php-xml, php-json, php-intl, php-pear, php-imagick, php-dev, php-common, php-mbstring, php-zip, php-soap, php-bz2, php-bcmath, php-gmp, php-apcu, libmagickcore-dev, php-redis, php-memcached, mariadb-server, curl, unzip, expect, python3-toml, wireguard-tools
+

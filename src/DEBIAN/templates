@@ -1,0 +1,23 @@
+Template: t3-gem-nextcloud/password
+Type: password
+Description: Enter new CLOUD password:
+ This password will be used for authentication
+ on the web page.
+
+Template: t3-gem-nextcloud/password-confirm
+Type: password
+Description: Confirm password:
+ Please confirm the password you entered.
+
+Template: t3-gem-nextcloud/password-mismatch
+Type: error
+Description: Password mismatch
+ The passwords you entered do not match. Please try again.
+
+Template: t3-gem-nextcloud/confirm-remove
+Type: boolean
+Default: false
+Description: Are you sure you want to remove this package and DELETE ALL USER DATA?
+ This will permanently delete all configuration and user files.
+ WARNING: Ensure you have backups before proceeding!
+

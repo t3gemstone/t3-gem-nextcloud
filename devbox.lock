@@ -1,0 +1,133 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "dpkg@latest": {
+      "last_modified": "2025-08-04T03:33:26Z",
+      "resolved": "github:NixOS/nixpkgs/6a489c9482ca676ce23c0bcd7f2e1795383325fa#dpkg",
+      "source": "devbox-search",
+      "version": "1.22.21",
+      "systems": {
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/n4jn5zq51id2z4frdmpa4q26x5m67x3g-dpkg-1.22.21",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/n4jn5zq51id2z4frdmpa4q26x5m67x3g-dpkg-1.22.21"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6ivpf1crj9p6707icbbk011n11ch7l3p-dpkg-1.22.21",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6ivpf1crj9p6707icbbk011n11ch7l3p-dpkg-1.22.21"
+        }
+      }
+    },
+    "fakeroot@latest": {
+      "last_modified": "2025-07-28T17:09:23Z",
+      "resolved": "github:NixOS/nixpkgs/648f70160c03151bc2121d179291337ad6bc564b#fakeroot",
+      "source": "devbox-search",
+      "version": "1.37.1.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/irag4jxw6vzd6vcri0c5dsz79v4cp5cq-fakeroot-1.37.1.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/irag4jxw6vzd6vcri0c5dsz79v4cp5cq-fakeroot-1.37.1.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/18scdwya5xpgi8hww2b0x5pbwxjpdh25-fakeroot-1.37.1.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/18scdwya5xpgi8hww2b0x5pbwxjpdh25-fakeroot-1.37.1.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mvm9jzw092pqnafzazk92mbsbsa77x4p-fakeroot-1.37.1.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mvm9jzw092pqnafzazk92mbsbsa77x4p-fakeroot-1.37.1.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vvqy89gnx6gvgaayaz7swzpkrh0bq7v7-fakeroot-1.37.1.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vvqy89gnx6gvgaayaz7swzpkrh0bq7v7-fakeroot-1.37.1.2"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-08-15T14:26:43Z",
+      "resolved": "github:NixOS/nixpkgs/32f313e49e42f715491e1ea7b306a87c16fe0388?lastModified=1755268003&narHash=sha256-nNaeJjo861wFR0tjHDyCnHs1rbRtrMgxAKMoig9Sj%2Fw%3D"
+    },
+    "go-task@latest": {
+      "last_modified": "2025-08-03T19:18:05Z",
+      "resolved": "github:NixOS/nixpkgs/bf9fa86a9b1005d932f842edf2c38eeecc98eef3#go-task",
+      "source": "devbox-search",
+      "version": "3.44.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2s2xbxzkshricg27p5m6qg8xay6j1qcm-go-task-3.44.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2s2xbxzkshricg27p5m6qg8xay6j1qcm-go-task-3.44.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/gf4cj1rnppcdbn1pksaw1a4zs6mm97h1-go-task-3.44.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/gf4cj1rnppcdbn1pksaw1a4zs6mm97h1-go-task-3.44.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/nq56q1rfknrl3b7acshqbiyrg6xnq39r-go-task-3.44.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/nq56q1rfknrl3b7acshqbiyrg6xnq39r-go-task-3.44.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zjfzqsapmydx7y49clmj29l75ki4gi11-go-task-3.44.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zjfzqsapmydx7y49clmj29l75ki4gi11-go-task-3.44.1"
+        }
+      }
+    }
+  }
+}

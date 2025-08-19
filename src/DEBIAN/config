@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# shellcheck disable=SC2119
+set -e
+
+. /usr/share/debconf/confmodule
+
+match=false
+
+if [ "$DEBIAN_FRONTEND" = "noninteractive" ]; then
+	exit 0
+fi
+
+while [ "$match" != "true" ]; do
+	db_input critical t3-gem-nextcloud/password || true
+	db_go || true
+	db_get t3-gem-nextcloud/password
+	PASSWORD="$RET"
+	db_set t3-gem-nextcloud/password "$PASSWORD"
+
+	db_input critical t3-gem-nextcloud/password-confirm || true
+	db_go || true
+	db_get t3-gem-nextcloud/password-confirm
+	PASSWORD_CONFIRM="$RET"
+	db_set t3-gem-nextcloud/password-confirm "$PASSWORD_CONFIRM"
+
+	if [ "$PASSWORD" = "$PASSWORD_CONFIRM" ]; then
+		match="true"
+	else
+		db_input critical t3-gem-nextcloud/password-mismatch || true
+		db_go || true
+		db_fset t3-gem-nextcloud/password seen false
+		db_fset t3-gem-nextcloud/password-confirm seen false
+	fi
+done
+
+exit 0

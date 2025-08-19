@@ -1,0 +1,141 @@
+#!/bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+ROOT_PASSWORD=""
+
+create_password()
+{
+
+	if [ "$DEBIAN_FRONTEND" != "noninteractive" ]; then
+		db_get t3-gem-nextcloud/password
+		ROOT_PASSWORD="$RET"
+		db_reset t3-gem-nextcloud/password
+		db_reset t3-gem-nextcloud/password-confirm
+		db_fset t3-gem-nextcloud/password seen false
+		db_fset t3-gem-nextcloud/password-confirm seen false
+		db_stop
+	else
+		ROOT_PASSWORD=$(openssl rand -base64 32)
+	fi
+
+}
+
+setup_mariadb()
+{
+
+	# Check if variable is empty
+	if [ -z "${ROOT_PASSWORD}" ]; then
+	    echo "Error: ROOT_PASSWORD is not set" >&2
+	    exit 2
+	fi
+
+	deb-systemd-invoke start mariadb && while ! mysqladmin ping --silent; do sleep 1; done
+
+	SECURE_MYSQL=$(expect -c "
+
+	set timeout 10
+	spawn mariadb-secure-installation
+
+	expect \"Enter current password for root (enter for none): \"
+	send \"n\r\"
+	expect \"Switch to unix_socket authentication \[Y/n\] \"
+	send \"n\r\"
+	expect \"Change the root password? \[Y/n\] \"
+	send \"y\r\"
+	expect \"New password: \"
+	send \"${ROOT_PASSWORD}\r\"
+	expect \"Re-enter new password: \"
+	send \"${ROOT_PASSWORD}\r\"
+	expect \"Remove anonymous users? \[Y/n\] \"
+	send \"y\r\"
+	expect \"Disallow root login remotely? \[Y/n\] \"
+	send \"y\r\"
+	expect \"Remove test database and access to it? \[Y/n\] \"
+	send \"y\r\"
+	expect \"Reload privilege tables now? \[Y/n\] \"
+	send \"y\r\"
+	expect eof
+	")
+
+	mariadb -u root -p"$ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS t3_gem_nextcloud_db;"
+	mariadb -u root -p"$ROOT_PASSWORD" -e "CREATE USER IF NOT EXISTS 't3gemnextclouduser'@'localhost' IDENTIFIED BY '$ROOT_PASSWORD'; ALTER USER 't3gemnextclouduser'@'localhost' IDENTIFIED BY '$ROOT_PASSWORD'"
+	mariadb -u root -p"$ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON t3_gem_nextcloud_db.* TO 't3gemnextclouduser'@'localhost';FLUSH PRIVILEGES;"
+
+	if [ "$DEBIAN_FRONTEND" = "noninteractive" ]; then
+		echo $ROOT_PASSWORD > /tmp/password.txt
+	fi
+}
+
+configure_nextcloud()
+{
+	tar -xJf /tmp/nextcloud.tar.xz -C /var/www/
+	chown -R www-data:www-data /var/www/nextcloud
+
+	a2ensite nextcloud.conf
+
+	cd /var/www/nextcloud
+	deb-systemd-invoke restart mariadb
+
+	sudo -u www-data php occ maintenance:install \
+	--database="mysql" \
+	--database-name="t3_gem_nextcloud_db" \
+	--database-host="localhost" \
+	--database-port=3306 \
+	--database-user="t3gemnextclouduser" \
+	--database-pass=${ROOT_PASSWORD} \
+	--admin-user="admin" \
+	--admin-pass=${ROOT_PASSWORD} && \
+	sudo -u www-data php occ app:enable twofactor_totp && \
+	sudo -u www-data php occ app:install passman
+	sudo -u www-data php occ app:install richdocumentscode
+	sudo -u www-data php occ app:install richdocuments
+	sudo -u www-data php occ app:install calendar
+	sudo -u www-data php occ app:install metadata
+	sudo -u www-data php occ app:install deck
+	sudo -u www-data php occ app:install files_archive
+	sudo -u www-data php occ app:install drawio
+	sudo -u www-data php occ app:install spreed
+	
+	# Add device name to trusted domains
+	sudo -u www-data php occ config:system:set trusted_domains 1 --value=$(hostname)
+
+	if [ -n "${NC_ENABLE_APPEND}" ]; then
+		for app in ${NC_ENABLE_APPEND}
+		do
+			sudo -u www-data php occ app:enable "${app}"
+		done
+	fi
+
+	if [ -n "${NC_INSTALL_APPEND}" ]; then
+		for app in ${NC_ENABLE_APPEND}
+		do
+			sudo -u www-data php occ app:install ${app}
+		done
+	fi
+	
+	rm -f /tmp/nextcloud.tar.xz
+}
+
+case "$1" in
+
+	"configure")
+
+			create_password
+			setup_mariadb
+			configure_nextcloud
+
+			echo "Enabling and starting t3-gem-nextcloud services..." >&2
+			deb-systemd-invoke restart apache2 >/dev/null || true
+			deb-systemd-invoke restart mariadb >/dev/null || true
+
+			if [ "$DEBIAN_FRONTEND" = "noninteractive" ]; then
+				printf 'Random password saved to /tmp/password.txt'
+			else
+				echo "Please note your password because without it you cannot access your cloud!"
+			fi
+		;;
+
+esac

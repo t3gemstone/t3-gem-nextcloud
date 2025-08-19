@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+# Debconf ile onay al
+if [ "$DEBIAN_FRONTEND" != "noninteractive" ]; then
+    . /usr/share/debconf/confmodule
+    # Reset question state
+    db_fset t3-gem-nextcloud/confirm-remove seen false
+    db_set t3-gem-nextcloud/confirm-remove false
+
+    if ! db_input critical t3-gem-nextcloud/confirm-remove || ! db_go; then
+        echo "Uninstallation cancelled by user." >&2
+        exit 1
+    fi
+    db_get t3-gem-nextcloud/confirm-remove
+    [ "$RET" = true ] || exit 1
+    db_stop
+fi
+
+a2dissite nextcloud.conf
+deb-systemd-invoke reload apache2
+exit 0
+
+
+
+
