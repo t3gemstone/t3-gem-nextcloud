@@ -38,7 +38,7 @@ $ devbox shell
 During development, use the following command for quick packaging and testing:
 
 ```bash
-(devbox) $ task build
+📦 devbox:t3-gem-nextcloud> task build
 ```
 
 The package will be generated at: build/t3-gem-nextcloud_{VERSION}_all.deb
@@ -46,7 +46,7 @@ The package will be generated at: build/t3-gem-nextcloud_{VERSION}_all.deb
 To create a release version, run:
 
 ```bash
-(devbox) $ task release
+📦 devbox:t3-gem-nextcloud> task release
 ```
 
 The release package will be generated at: release/t3-gem-nextcloud_{VERSION}_all.deb

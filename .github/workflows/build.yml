@@ -3,7 +3,7 @@ name: Build t3-gem-nextcloud
 on: 
   push:
     tags:
-      - '*'
+      - 'v*'
 
 jobs:
   build:
@@ -12,7 +12,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          lfs: true
+          fetch-depth: 0
         
+      - name: Setup LFS
+        run: |
+          sudo apt-get install git-lfs -y
+          git lfs install --local
+          git lfs pull
+
       - name: Install taskfile for build project
         run: |
             mkdir "${GITHUB_WORKSPACE}/bin"
