@@ -34,4 +34,14 @@ tasks:
       - fakeroot chown -R root:root ./src
       - fakeroot dpkg-deb --build ./src ./release
 
+  docker-start:
+    dir: docker/
+    cmds:
+      - docker compose up -d
+
+  docker-stop:
+    dir: docker/
+    cmds:
+      - docker compose down
+      
   clean: rm -rf build release

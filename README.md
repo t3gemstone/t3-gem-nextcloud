@@ -50,3 +50,17 @@ To create a release version, run:
 ```
 
 The release package will be generated at: release/t3-gem-nextcloud_{VERSION}_all.deb
+
+## Docker
+
+For Docker instructions, read [docker/README.md]. Make any necessary changes, then run:
+
+```bash
+📦 devbox:t3-gem-nextcloud> task docker-start
+```
+
+To stop the containers, run:
+
+```bash
+📦 devbox:t3-gem-nextcloud> task docker-stop
+```

@@ -1,0 +1,58 @@
+---
+services:
+  tailscaleservice:
+    image: tailscale/tailscale:latest
+    hostname: ${CONTAINER_HOSTNAME}
+    secrets:
+      - ts_auth_key
+    environment:
+      - TS_EXTRA_ARGS=--auth-key file:/run/secrets/ts_auth_key
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - ${DATA_PATH_PREFIX}tailscale-data:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+  nextcloud:
+    image: nextcloud:31.0.8-apache
+    restart: unless-stopped
+    container_name: gemcloud-container-nextcloud
+    network_mode: service:tailscaleservice
+    environment:
+      - MARIADB_HOST_NAME=${MARIADB_HOST_NAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
+    secrets:
+      - admin_user_password
+      - mysql_password
+    volumes:
+      - ${DATA_PATH_PREFIX}nextcloud-data:/var/www/html
+      - ./start-container.sh:/usr/local/bin/start-container.sh
+    depends_on:
+      - db
+    entrypoint: ["/bin/sh", "-c", "/usr/local/bin/start-container.sh && apache2-foreground"]
+  db:
+    image: mariadb
+    container_name: ${MARIADB_HOST_NAME}
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+    secrets:
+      - mysql_password
+    volumes:
+      - ${DATA_PATH_PREFIX}mariadb-data:/var/lib/mysql
+
+secrets:
+  admin_user_password:
+    file: files/admin_user_password.txt
+  mysql_password:
+    file: files/mysql_password.txt
+  ts_auth_key:
+    file: files/ts_auth_key.txt
