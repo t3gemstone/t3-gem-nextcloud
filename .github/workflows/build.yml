@@ -1,9 +1,10 @@
 name: Build t3-gem-nextcloud
 
 on: 
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+  # push:
+  #   tags:
+  #     - 'v*'
 
 jobs:
   build:
@@ -12,15 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          lfs: true
-          fetch-depth: 0
-        
-      - name: Setup LFS
-        run: |
-          sudo apt-get install git-lfs -y
-          git lfs install --local
-          git lfs pull
 
       - name: Install taskfile for build project
         run: |
@@ -28,7 +20,7 @@ jobs:
             sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b "${GITHUB_WORKSPACE}/bin"
 
       - name: Install fakeroot
-        run: sudo apt install -y fakeroot 
+        run: sudo apt install -y fakeroot wget
       
       - name: Build project
         run: |

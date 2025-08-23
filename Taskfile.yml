@@ -17,6 +17,7 @@ tasks:
 
   download-nextcloud:
     cmds:
+      - mkdir -p src/tmp
       - if [ ! -f src/tmp/nextcloud.tar.bz2 ] || [ "$(md5sum src/tmp/nextcloud.tar.bz2 | cut -d' ' -f1)" != "{{ .NEXTCLOUD_MD5CHKSUM }}" ]; then rm -rf src/tmp/nextcloud.tar*; wget {{ .NEXTCLOUD_DLINK }} -O src/tmp/nextcloud.tar.bz2; fi
 
   build:
