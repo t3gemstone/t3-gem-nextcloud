@@ -6,6 +6,8 @@ version: "3"
 vars:
   NAME: "t3-gem-nextcloud"
   BUILD_PARAMS: -Zzstd -z0
+  NEXTCLOUD_MD5CHKSUM: 69c1e63c3c68e220dcc1b27d5f3d051b
+  NEXTCLOUD_DLINK: https://download.nextcloud.com/server/releases/nextcloud-31.0.8.tar.bz2
 
 tasks:
   default:
@@ -13,14 +15,20 @@ tasks:
     cmds:
       - task --list-all --summary
 
+  download-nextcloud:
+    cmds:
+      - if [ ! -f src/tmp/nextcloud.tar.bz2 ] || [ "$(md5sum src/tmp/nextcloud.tar.bz2 | cut -d' ' -f1)" != "{{ .NEXTCLOUD_MD5CHKSUM }}" ]; then rm -rf src/tmp/nextcloud.tar*; wget {{ .NEXTCLOUD_DLINK }} -O src/tmp/nextcloud.tar.bz2; fi
+
   build:
     cmds:
+      - task: download-nextcloud
       - mkdir -p build/
       - fakeroot chown -R root:root ./src
       - fakeroot dpkg-deb {{ .BUILD_PARAMS }} --build ./src ./build
   
   release:
     cmds:
+      - task: download-nextcloud
       - mkdir -p release
       - fakeroot chown -R root:root ./src
       - fakeroot dpkg-deb --build ./src ./release
