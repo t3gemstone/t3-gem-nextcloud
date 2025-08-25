@@ -3,7 +3,21 @@
 set -e
 
 # Wait for the web server to start
-sleep 10
+sleep 15
+
+APPS="\
+    twofactor_totp \
+    contacts \
+    calendar \
+    passman \
+    richdocumentscode \
+    richdocuments \
+    metadata \
+    deck \
+    files_archive \
+    drawio \
+    spreed \
+"
 
 # Check if Nextcloud is installed
 if [ ! -f /var/www/html/config/config.php ]; then
@@ -32,27 +46,26 @@ if [ ! -f /var/www/html/config/config.php ]; then
     --database-pass="${DATABASE_PASSWORD}" \
     --admin-user="admin" \
     --admin-pass="${ADMIN_USER_PASSWORD}"
+    
+    # add hostname to trusted domains
+    php /var/www/html/occ config:system:set trusted_domains 1 --value=$(hostname)
 
     echo "Nextcloud configuration started."
 
-    php /var/www/html/occ app:enable twofactor_totp
-    php /var/www/html/occ app:enable contacts
-	php /var/www/html/occ app:enable calendar
-    php /var/www/html/occ app:install passman
-    php /var/www/html/occ app:install richdocumentscode
-	php /var/www/html/occ app:install richdocuments
-	php /var/www/html/occ app:install metadata
-	php /var/www/html/occ app:install deck
-	php /var/www/html/occ app:install files_archive
-	php /var/www/html/occ app:install drawio
-	php /var/www/html/occ app:install spreed
-    php /var/www/html/occ config:system:set trusted_domains 1 --value=$(hostname)
+    for app in ${APPS}; do
+        php /var/www/html/occ app:install "${app}" || true
+        php /var/www/html/occ app:enable "${app}"  || true
+    done
 
-    chown -R www-data:www-data /var/www/html
-
-    echo "Nextcloud configuration finished."
+    echo "Nextcloud setup completed."
 else
     echo "Nextcloud is already installed."
+    echo "Checking apps installed also."
+
+    for app in ${APPS}; do
+        php /var/www/html/occ app:install "${app}" || true
+        php /var/www/html/occ app:enable "${app}"  || true
+    done
 fi
 
 if [ -n "${NEXTCLOUD_TRUSTED_DOMAINS}" ]; then
@@ -63,6 +76,6 @@ if [ -n "${NEXTCLOUD_TRUSTED_DOMAINS}" ]; then
     done
 fi
 
-chown -R www-data:www-data /var/www/html/config
+chown -R www-data:www-data /var/www/html
 
-echo "Nextcloud setup completed."
+echo "Nextcloud init finished."

@@ -3,6 +3,7 @@ services:
   tailscaleservice:
     image: tailscale/tailscale:latest
     hostname: ${CONTAINER_HOSTNAME}
+    container_name: gemcloud-container-tailscaleservice
     secrets:
       - ts_auth_key
     environment:
