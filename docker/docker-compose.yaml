@@ -37,7 +37,7 @@ services:
       - db
     entrypoint: ["/bin/sh", "-c", "/usr/local/bin/start-container.sh && apache2-foreground"]
   db:
-    image: mariadb
+    image: mariadb:11.4
     container_name: ${MARIADB_HOST_NAME}
     restart: unless-stopped
     environment:

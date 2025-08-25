@@ -72,7 +72,7 @@ if [ -n "${NEXTCLOUD_TRUSTED_DOMAINS}" ]; then
     i=2
     for item in ${NEXTCLOUD_TRUSTED_DOMAINS}; do
         php /var/www/html/occ config:system:set trusted_domains "${i}" --value="${item}"
-        i=$((i + 1))  # Increment the index
+        i=$((i + 1))
     done
 fi
 
