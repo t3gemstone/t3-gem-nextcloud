@@ -1,4 +1,4 @@
-# T3 GemCloud Docker
+# T3 Gemcloud Docker
 
 ## Usage
 
