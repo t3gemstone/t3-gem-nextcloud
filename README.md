@@ -53,7 +53,7 @@ The release package will be generated at: release/t3-gem-nextcloud_{VERSION}_all
 
 ## Docker
 
-For Docker instructions, read [docker/README.md]. Make any necessary changes, then run:
+For Docker instructions, read [docker/README.md](docker/README.md). Make any necessary changes, then run:
 
 ```bash
 📦 devbox:t3-gem-nextcloud> task docker-start

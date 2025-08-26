@@ -71,7 +71,9 @@ setup_mariadb()
 
 configure_nextcloud()
 {
-	tar -xjf /tmp/nextcloud.tar.bz2 -C /var/www/
+	
+	local nextcloud_archive="/tmp/nextcloud.tar.bz2"
+	tar -xjf "${nextcloud_archive}" -C /var/www/
 	chown -R www-data:www-data /var/www/nextcloud
 
 	a2ensite nextcloud.conf
@@ -88,6 +90,13 @@ configure_nextcloud()
 	--database-pass=${ROOT_PASSWORD} \
 	--admin-user="admin" \
 	--admin-pass=${ROOT_PASSWORD}
+
+	# move data directory outside of web root
+	mkdir -p /data/nextcloud-data
+    sudo -u www-data php occ config:system:set datadirectory --value="/data/nextcloud-data"
+    touch /data/nextcloud-data/.ncdata
+    chown -R www-data:www-data /data
+
 	sudo -u www-data php occ app:enable twofactor_totp
 	sudo -u www-data php occ app:enable contacts
 	sudo -u www-data php occ app:enable calendar
@@ -117,7 +126,7 @@ configure_nextcloud()
 		done
 	fi
 	
-	rm -f /tmp/nextcloud.tar.xz
+	rm -f "${nextcloud_archive}"
 }
 
 case "$1" in

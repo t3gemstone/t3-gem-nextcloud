@@ -1,5 +1,6 @@
 #!bin/sh
 
 rm -rf /var/www/nextcloud
+rm -rf /data/nextcloud-data
 mariadb -u root -e "DROP DATABASE IF EXISTS t3_gem_nextcloud_db;"
 mariadb -u root -e "DROP USER IF EXISTS t3gemnextclouduser;"

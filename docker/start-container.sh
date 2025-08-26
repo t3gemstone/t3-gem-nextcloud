@@ -47,6 +47,10 @@ if [ ! -f /var/www/html/config/config.php ]; then
     --admin-user="admin" \
     --admin-pass="${ADMIN_USER_PASSWORD}"
     
+    # move data directory outside of web root
+    php /var/www/html/occ config:system:set datadirectory --value="/data/nextcloud-data"
+    touch /data/nextcloud-data/.ncdata
+
     # add hostname to trusted domains
     php /var/www/html/occ config:system:set trusted_domains 1 --value=$(hostname)
 
@@ -77,5 +81,6 @@ if [ -n "${NEXTCLOUD_TRUSTED_DOMAINS}" ]; then
 fi
 
 chown -R www-data:www-data /var/www/html
+chown -R www-data:www-data /data
 
 echo "Nextcloud init finished."

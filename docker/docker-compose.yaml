@@ -31,7 +31,8 @@ services:
       - admin_user_password
       - mysql_password
     volumes:
-      - ${DATA_PATH_PREFIX}nextcloud-data:/var/www/html
+      - ${DATA_PATH_PREFIX}nextcloud-root:/var/www/html
+      - ${DATA_PATH_PREFIX}nextcloud-data:/data/nextcloud-data
       - ./start-container.sh:/usr/local/bin/start-container.sh
     depends_on:
       - db
