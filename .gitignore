@@ -1,4 +1,5 @@
 release/
 build/
-src/tmp/*
+src/deb/tmp/*
 data*
+src/deb/etc/t3-gem-nextcloud/*

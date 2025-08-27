@@ -92,10 +92,9 @@ configure_nextcloud()
 	--admin-pass=${ROOT_PASSWORD}
 
 	# move data directory outside of web root
-	mkdir -p /data/nextcloud-data
+	sudo -u www-data mkdir -p /data/nextcloud-data
     sudo -u www-data php occ config:system:set datadirectory --value="/data/nextcloud-data"
-    touch /data/nextcloud-data/.ncdata
-    chown -R www-data:www-data /data
+    sudo -u www-data touch /data/nextcloud-data/.ncdata
 
 	sudo -u www-data php occ app:enable twofactor_totp
 	sudo -u www-data php occ app:enable contacts
@@ -108,6 +107,10 @@ configure_nextcloud()
 	sudo -u www-data php occ app:install files_archive
 	sudo -u www-data php occ app:install drawio
 	sudo -u www-data php occ app:install spreed
+
+	sudo -u www-data php occ theming:config logo "/etc/t3-gem-nextcloud/logo"
+    sudo -u www-data php occ theming:config background "/etc/t3-gem-nextcloud/background"
+    sudo -u www-data php occ theming:config primary_color "#1573BA"
 	
 	# Add device name to trusted domains
 	sudo -u www-data php occ config:system:set trusted_domains 1 --value=$(hostname)

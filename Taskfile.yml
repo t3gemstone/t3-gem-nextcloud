@@ -17,30 +17,36 @@ tasks:
 
   download-nextcloud:
     cmds:
-      - mkdir -p src/tmp
-      - if [ ! -f src/tmp/nextcloud.tar.bz2 ] || [ "$(md5sum src/tmp/nextcloud.tar.bz2 | cut -d' ' -f1)" != "{{ .NEXTCLOUD_MD5CHKSUM }}" ]; then rm -rf src/tmp/nextcloud.tar*; wget {{ .NEXTCLOUD_DLINK }} -O src/tmp/nextcloud.tar.bz2; fi
+      - mkdir -p src/deb/tmp
+      - if [ ! -f src/deb/tmp/nextcloud.tar.bz2 ] || [ "$(md5sum src/deb/tmp/nextcloud.tar.bz2 | cut -d' ' -f1)" != "{{ .NEXTCLOUD_MD5CHKSUM }}" ]; then rm -rf src/deb/tmp/nextcloud.tar*; wget {{ .NEXTCLOUD_DLINK }} -O src/deb/tmp/nextcloud.tar.bz2; fi
+
+  prepare:
+    cmds:
+      - task: download-nextcloud
+      - mkdir -p src/deb/etc/t3-gem-nextcloud/
+      - cp src/common/* src/deb/etc/t3-gem-nextcloud/
 
   build:
     cmds:
-      - task: download-nextcloud
+      - task: prepare
       - mkdir -p build/
-      - fakeroot chown -R root:root ./src
-      - fakeroot dpkg-deb {{ .BUILD_PARAMS }} --build ./src ./build
+      - fakeroot chown -R root:root ./src/deb
+      - fakeroot dpkg-deb {{ .BUILD_PARAMS }} --build ./src/deb ./build
   
   release:
     cmds:
-      - task: download-nextcloud
+      - task: prepare
       - mkdir -p release
-      - fakeroot chown -R root:root ./src
-      - fakeroot dpkg-deb --build ./src ./release
+      - fakeroot chown -R root:root ./src/deb
+      - fakeroot dpkg-deb --build ./src/deb ./release
 
   docker-start:
-    dir: docker/
+    dir: src/docker/
     cmds:
       - docker compose up -d
 
   docker-stop:
-    dir: docker/
+    dir: src/docker/
     cmds:
       - docker compose down
       

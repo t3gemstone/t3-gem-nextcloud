@@ -46,7 +46,7 @@ if [ ! -f /var/www/html/config/config.php ]; then
     --database-pass="${DATABASE_PASSWORD}" \
     --admin-user="admin" \
     --admin-pass="${ADMIN_USER_PASSWORD}"
-    
+ 
     # move data directory outside of web root
     php /var/www/html/occ config:system:set datadirectory --value="/data/nextcloud-data"
     touch /data/nextcloud-data/.ncdata
@@ -55,6 +55,11 @@ if [ ! -f /var/www/html/config/config.php ]; then
     php /var/www/html/occ config:system:set trusted_domains 1 --value=$(hostname)
 
     echo "Nextcloud configuration started."
+
+    # theming
+    php /var/www/html/occ theming:config logo "/etc/t3-gem-nextcloud/logo"
+    php /var/www/html/occ theming:config background "/etc/t3-gem-nextcloud/background"
+    php /var/www/html/occ theming:config primary_color "#1573BA"
 
     for app in ${APPS}; do
         php /var/www/html/occ app:install "${app}" || true
