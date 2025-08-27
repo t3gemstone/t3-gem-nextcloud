@@ -1,5 +1,5 @@
 Package: t3-gem-nextcloud
-Version: 0.0.3
+Version: 0.0.4
 Architecture: all
 Section: utils
 Priority: optional
